@@ -1,0 +1,137 @@
+category,skill
+Programming Languages,python
+Programming Languages,java
+Programming Languages,javascript
+Programming Languages,typescript
+Programming Languages,c++
+Programming Languages,c#
+Programming Languages,go
+Programming Languages,rust
+Programming Languages,scala
+Programming Languages,kotlin
+Programming Languages,swift
+Programming Languages,r
+Programming Languages,matlab
+Programming Languages,julia
+Programming Languages,perl
+Programming Languages,ruby
+Programming Languages,php
+Programming Languages,bash
+Programming Languages,shell
+ML Libraries,tensorflow
+ML Libraries,pytorch
+ML Libraries,keras
+ML Libraries,scikit-learn
+ML Libraries,sklearn
+ML Libraries,xgboost
+ML Libraries,lightgbm
+ML Libraries,catboost
+ML Libraries,huggingface
+ML Libraries,transformers
+ML Libraries,spacy
+ML Libraries,nltk
+ML Libraries,gensim
+ML Libraries,opencv
+ML Libraries,pandas
+ML Libraries,numpy
+ML Libraries,scipy
+ML Libraries,matplotlib
+ML Libraries,seaborn
+ML Libraries,plotly
+ML Libraries,statsmodels
+ML Libraries,mlflow
+ML Libraries,wandb
+ML Libraries,langchain
+ML Libraries,llama
+ML Libraries,fastai
+Cloud Technologies,aws
+Cloud Technologies,azure
+Cloud Technologies,gcp
+Cloud Technologies,google cloud
+Cloud Technologies,s3
+Cloud Technologies,ec2
+Cloud Technologies,lambda
+Cloud Technologies,sagemaker
+Cloud Technologies,bigquery
+Cloud Technologies,databricks
+Cloud Technologies,snowflake
+Cloud Technologies,redshift
+Cloud Technologies,cloudformation
+Cloud Technologies,terraform
+Cloud Technologies,pulumi
+Cloud Technologies,heroku
+Cloud Technologies,vercel
+Cloud Technologies,netlify
+Cloud Technologies,digitalocean
+Databases,sql
+Databases,mysql
+Databases,postgresql
+Databases,postgres
+Databases,sqlite
+Databases,mongodb
+Databases,redis
+Databases,cassandra
+Databases,elasticsearch
+Databases,neo4j
+Databases,dynamodb
+Databases,firebase
+Databases,supabase
+Databases,oracle
+Databases,mssql
+Web Technologies,html
+Web Technologies,css
+Web Technologies,react
+Web Technologies,angular
+Web Technologies,vue
+Web Technologies,nextjs
+Web Technologies,nodejs
+Web Technologies,express
+Web Technologies,django
+Web Technologies,flask
+Web Technologies,fastapi
+Web Technologies,springboot
+Web Technologies,graphql
+Web Technologies,rest
+Web Technologies,restful
+Web Technologies,api
+Web Technologies,microservices
+Web Technologies,websocket
+Web Technologies,tailwind
+Web Technologies,bootstrap
+DevOps Tools,docker
+DevOps Tools,kubernetes
+DevOps Tools,k8s
+DevOps Tools,jenkins
+DevOps Tools,github actions
+DevOps Tools,gitlab ci
+DevOps Tools,circleci
+DevOps Tools,ansible
+DevOps Tools,chef
+DevOps Tools,puppet
+DevOps Tools,prometheus
+DevOps Tools,grafana
+DevOps Tools,elk
+DevOps Tools,splunk
+DevOps Tools,nginx
+DevOps Tools,apache
+DevOps Tools,git
+DevOps Tools,github
+DevOps Tools,gitlab
+DevOps Tools,bitbucket
+DevOps Tools,jira
+DevOps Tools,confluence
+Data Engineering,spark
+Data Engineering,hadoop
+Data Engineering,kafka
+Data Engineering,airflow
+Data Engineering,dbt
+Data Engineering,flink
+Data Engineering,hive
+Data Engineering,hbase
+Data Engineering,presto
+Data Engineering,dask
+Data Engineering,etl
+Data Engineering,elt
+Data Engineering,data pipeline
+Data Engineering,data warehouse
+Data Engineering,data lake
