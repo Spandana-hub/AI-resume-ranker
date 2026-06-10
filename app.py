@@ -379,14 +379,29 @@ def plot_score_breakdown(match_score_data: dict, ats_score: int) -> plt.Figure:
     """
     Radar/bar chart showing score component breakdown.
     """
-    labels = ["TF-IDF\nSimilarity", "Keyword\nOverlap", "Skill\nCoverage", "ATS\nScore"]
+    #labels = ["TF-IDF\nSimilarity", "Keyword\nOverlap", "Skill\nCoverage", "ATS\nScore"]
+    labels = [
+    "TF-IDF",
+    "Semantic",
+    "Keyword",
+    "Skill",
+    "ATS"
+    ]
     values = [
         match_score_data["tfidf_similarity"],
+        match_score_data["semantic_similarity"],
         match_score_data["keyword_overlap"],
         match_score_data["skill_coverage"],
         ats_score,
     ]
-    colors = ["#7c3aed", "#3b82f6", "#10b981", "#f59e0b"]
+    #colors = ["#7c3aed", "#3b82f6", "#10b981", "#f59e0b"]
+    colors = [
+    "#7c3aed",
+    "#06b6d4",
+    "#3b82f6",
+    "#10b981",
+    "#f59e0b"
+    ]
 
     fig, ax = plt.subplots(figsize=(7, 3.5), facecolor="#0f1117")
     ax.set_facecolor("#0f1117")
@@ -440,6 +455,7 @@ def generate_text_report(
         "── MATCH SCORES ─────────────────────────────────",
         f"  Overall Match Score : {match_data['final_score']:.1f}%  ({match_data['score_label']})",
         f"  TF-IDF Similarity   : {match_data['tfidf_similarity']:.1f}%",
+        f"  Semantic Similarity : {match_data['semantic_similarity']:.1f}%",
         f"  Keyword Overlap     : {match_data['keyword_overlap']:.1f}%",
         f"  Skill Coverage      : {match_data['skill_coverage']:.1f}%",
         f"  ATS Score           : {ats_data['ats_score']}%  ({ats_data['ats_label']})",
@@ -626,6 +642,8 @@ def render_results(results: dict):
     # ── TOP METRICS ROW ──────────────────────────────────────────
     st.markdown("---")
     st.markdown("## 📊 Analysis Results")
+    st.write("TF-IDF Similarity:", md["tfidf_similarity"], "%")
+    st.write("Semantic Similarity:", md["semantic_similarity"], "%")
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:

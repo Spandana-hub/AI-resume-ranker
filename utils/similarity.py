@@ -18,8 +18,14 @@ import numpy as np
 from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
 
 from utils.text_preprocessing import preprocess_text, clean_text
+
+# Load model only once
+semantic_model = SentenceTransformer(
+    "sentence-transformers/all-MiniLM-L6-v2"
+)
 
 
 # ─────────────────────────────────────────────
@@ -65,6 +71,35 @@ def compute_tfidf_cosine_similarity(resume_text: str, jd_text: str) -> float:
         # tfidf_matrix[0] = resume vector, tfidf_matrix[1] = jd vector
         score = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
         return float(score)
+    except Exception:
+        return 0.0
+    
+def compute_semantic_similarity(
+    resume_text: str,
+    jd_text: str
+) -> float:
+    """
+    Sentence Transformer based semantic similarity.
+
+    Returns:
+        float between 0 and 1
+    """
+
+    if not resume_text.strip() or not jd_text.strip():
+        return 0.0
+
+    try:
+        embeddings = semantic_model.encode(
+            [resume_text, jd_text]
+        )
+
+        score = cosine_similarity(
+            [embeddings[0]],
+            [embeddings[1]]
+        )[0][0]
+
+        return float(score)
+
     except Exception:
         return 0.0
 
@@ -123,6 +158,10 @@ def compute_match_score(
     # Component 1: TF-IDF Cosine Similarity (semantic meaning)
     tfidf_score = compute_tfidf_cosine_similarity(resume_processed, jd_processed)
 
+    # Component 2: Sentence Transformer Semantic Similarity
+    semantic_score = compute_semantic_similarity( clean_text(resume_raw),
+    clean_text(jd_raw))
+    
     # Component 2: Keyword Overlap (exact word matching)
     keyword_score = compute_keyword_overlap_score(resume_processed, jd_processed)
 
@@ -130,9 +169,10 @@ def compute_match_score(
     skill_score = skill_coverage_pct / 100.0
 
     # Weighted combination
-    WEIGHTS = {"tfidf": 0.50, "keyword": 0.30, "skill": 0.20}
+    WEIGHTS = {"tfidf": 0.50,"semantic": 0.40, "keyword": 0.30, "skill": 0.20}
     combined = (
         WEIGHTS["tfidf"] * tfidf_score
+        + WEIGHTS["semantic"] * semantic_score
         + WEIGHTS["keyword"] * keyword_score
         + WEIGHTS["skill"] * skill_score
     )
@@ -143,6 +183,7 @@ def compute_match_score(
     return {
         "final_score": final_score,
         "tfidf_similarity": round(tfidf_score * 100, 1),
+        "semantic_similarity": round(semantic_score * 100, 1),
         "keyword_overlap": round(keyword_score * 100, 1),
         "skill_coverage": round(skill_coverage_pct, 1),
         "score_label": _get_score_label(final_score),
