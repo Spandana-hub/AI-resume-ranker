@@ -61,19 +61,68 @@ from utils.similarity import (
 # ═══════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="AI Resume Ranker",
+    page_title="AI Resume Analyzer",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for modern look
+# Custom CSS for a cohesive, premium dark-themed dashboard
 st.markdown("""
 <style>
-/* Main app background */
-.stApp { background: #0f1117; }
+            
+/* Fix: Keep the header active so the sidebar can reopen, but make it match the background color */
+header[data-testid="stHeader"] {
+    background-color: #0f1117 !important;
+    border-bottom: none !important;
+}
 
-/* Metric cards */
+/* Ensure the reopen arrow button is visible against the dark background */
+header[data-testid="stHeader"] button {
+    color: #e2e8f0 !important;
+}
+/* 1. Global App Base & Text Overrides */
+.stApp { 
+    background: #0f1117; 
+}
+.stApp, .stMarkdown, p, h1, h2, h3, h4, h5, h6, label {
+    color: #e2e8f0 !important;
+}
+
+/* 2. Force Dark Mode Theme onto Streamlit Widgets */
+div[data-baseweb="textarea"] textarea, 
+div[data-baseweb="base-input"] input,
+div[data-baseweb="select"] {
+    background-color: #161925 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #2d3150 !important;
+    border-radius: 10px !important;
+}
+
+/* Clean up widget focus borders */
+div[data-baseweb="textarea"]:focus-within, 
+div[data-baseweb="base-input"]:focus-within {
+    border-color: #7c3aed !important;
+}
+
+/* Style the Drag-and-Drop File Uploader box */
+div[data-testid="stFileUploader"] {
+    background-color: #161925 !important;
+    border: 1px dashed #4c1d95 !important;
+    border-radius: 12px;
+    padding: 15px;
+}
+div[data-testid="stFileUploader"] section {
+    background-color: transparent !important;
+}
+
+/* Fix sidebar color matching */
+section[data-testid="stSidebar"] {
+    background-color: #12141c !important;
+    border-right: 1px solid #1e2230;
+}
+
+/* 3. Original Component Layouts */
 .metric-card {
     background: linear-gradient(135deg, #1e2130 0%, #252840 100%);
     border-radius: 16px;
@@ -82,10 +131,9 @@ st.markdown("""
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     margin-bottom: 12px;
 }
-.metric-card h2 { color: #a78bfa; margin: 0 0 4px 0; font-size: 2rem; }
-.metric-card p { color: #8892b0; margin: 0; font-size: 0.85rem; }
+.metric-card h2 { color: #4c6ef5 !important; margin: 0 0 4px 0; font-size: 2rem; }
+.metric-card p { color: #8892b0 !important; margin: 0; font-size: 0.85rem; }
 
-/* Section headers */
 .section-header {
     background: linear-gradient(90deg, #7c3aed22 0%, transparent 100%);
     border-left: 3px solid #7c3aed;
@@ -93,7 +141,7 @@ st.markdown("""
     border-radius: 0 8px 8px 0;
     margin: 24px 0 16px 0;
 }
-.section-header h3 { color: #e2e8f0; margin: 0; }
+.section-header h3 { color: #e2e8f0 !important; margin: 0; }
 
 /* Skill tags */
 .skill-tag-green {
@@ -117,15 +165,7 @@ st.markdown("""
     border-radius: 20px; padding: 3px 12px;
     margin: 3px; font-size: 0.8rem; font-weight: 500;
 }
-.skill-tag-purple {
-    display: inline-block;
-    background: #2e1065; color: #c4b5fd;
-    border: 1px solid #8b5cf6;
-    border-radius: 20px; padding: 3px 12px;
-    margin: 3px; font-size: 0.8rem; font-weight: 500;
-}
 
-/* Suggestion cards */
 .suggestion-card {
     background: #1a1f35;
     border-radius: 10px;
@@ -137,20 +177,32 @@ st.markdown("""
     line-height: 1.6;
 }
 
-/* Score gauge container */
-.gauge-container { text-align: center; }
-
-/* Info pills */
 .info-pill {
     display: inline-block;
     background: #1e293b; color: #94a3b8;
     border-radius: 20px; padding: 4px 14px;
-    font-size: 0.78rem; margin: 2px;
+    font-size: 0.78rem; margin: 4px 2px;
     border: 1px solid #334155;
+}
+            
+ /* Target both key action buttons natively using Streamlit selectors */
+button[data-testid="stBaseButton-primary"],
+button[data-testid="stBaseButton-secondary"] {
+    background-color: #334155 !important; /* Premium slate grey */
+    color: #cbd5e1 !important;            /* Clean light-grey text */
+    border: 1px solid #475569 !important; /* Subtly defined border */
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Hover effects for both buttons */
+button[data-testid="stBaseButton-primary"]:hover,
+button[data-testid="stBaseButton-secondary"]:hover {
+    background-color: #1e293b !important; /* Turns a bit darker grey */
+    color: #ffffff !important;            /* Text turns crisp white */
+    border-color: #334155 !important;    /* Darkens border edge */
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 # ═══════════════════════════════════════════════════════════════════
 #  PDF TEXT EXTRACTION
@@ -514,7 +566,7 @@ def generate_text_report(
     lines += [
         "",
         "=" * 60,
-        "  End of Report — AI Resume Ranker",
+        "  End of Report — AI Resume Analyzer",
         "=" * 60,
     ]
     return "\n".join(lines)
@@ -524,51 +576,92 @@ def generate_text_report(
 #  SIDEBAR
 # ═══════════════════════════════════════════════════════════════════
 
+# def render_sidebar():
+#     with st.sidebar:
+#         st.markdown("## 🎯 AI Resume Ranker")
+#         st.markdown(
+#             "<span class='info-pill'>v1.0</span> "
+#             "<span class='info-pill'>NLP + ML</span> "
+#             "<span class='info-pill'>TF-IDF</span>",
+#             unsafe_allow_html=True,
+#         )
+#         st.divider()
+
+#         st.markdown("### 📖 How It Works")
+#         st.markdown("""
+# 1. **Upload** your resume (PDF/TXT)
+# 2. **Paste** the job description
+# 3. **Click Analyze** to run the ML pipeline
+# 4. Review your **match score**, **skill gaps**, and **suggestions**
+#         """)
+#         st.divider()
+
+#         st.markdown("### ⚙️ ML Pipeline")
+#         steps = [
+#             "📄 Text Extraction",
+#             "🧹 Text Cleaning",
+#             "✂️ Tokenization",
+#             "🚫 Stopword Removal",
+#             "📊 TF-IDF Vectorization",
+#             "📐 Cosine Similarity",
+#             "🔍 Skill Extraction",
+#             "🤖 ATS Simulation",
+#         ]
+#         for step in steps:
+#             st.markdown(f"<span class='info-pill'>{step}</span>", unsafe_allow_html=True)
+
+#         # st.divider()
+#         # st.markdown("### 📚 Skills Database")
+#         # try:
+#         #     db = load_skills_database()
+#         #     total = sum(len(v) for v in db.values())
+#         #     st.metric("Total Skills Tracked", total)
+#         #     st.metric("Categories", len(db))
+#         # except Exception:
+#         #     st.warning("Skills DB not loaded")
+
+#         st.divider()
+#         st.caption("Built with Python · Streamlit · scikit-learn · NLTK · matplotlib")
 def render_sidebar():
     with st.sidebar:
-        st.markdown("## 🎯 AI Resume Ranker")
+        
         st.markdown(
-            "<span class='info-pill'>v1.0</span> "
-            "<span class='info-pill'>NLP + ML</span> "
-            "<span class='info-pill'>TF-IDF</span>",
+            "<h1 style='font-size: 2.1rem; font-weight: 800; color: #ffffff; margin-bottom: 5px; padding-bottom: 0px;'>"
+            "🎯 AI Resume Analyzer"
+            "</h1>", 
+            unsafe_allow_html=True
+        )
+        st.markdown(
+            "<span class='info-pill'>v1.0</span>"
+            "<span class='info-pill'>⚡ Fast Analysis</span>",
             unsafe_allow_html=True,
         )
         st.divider()
 
+        # How It Works Section — Using a clean Modern Sans-Serif font with high-contrast accenting
         st.markdown("### 📖 How It Works")
         st.markdown("""
-1. **Upload** your resume (PDF/TXT)
-2. **Paste** the job description
-3. **Click Analyze** to run the ML pipeline
-4. Review your **match score**, **skill gaps**, and **suggestions**
-        """)
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.92rem; line-height: 1.6; color: #cbd5e1;">
+            <p><strong style="color: #4c6ef5; font-weight: 600;">1. Upload</strong> your resume (PDF or TXT format).</p>
+            <p><strong style="color: #4c6ef5; font-weight: 600;">2. Paste</strong> the target job description.</p>
+            <p><strong style="color: #4c6ef5; font-weight: 600;">3. Click Analyze</strong> to evaluate alignment.</p>
+            <p><strong style="color: #4c6ef5; font-weight: 600;">4. Review</strong> your match score, missing keywords, and tailored suggestions.</p>
+        </div>
+        """, unsafe_allow_html=True)
         st.divider()
 
-        st.markdown("### ⚙️ ML Pipeline")
-        steps = [
-            "📄 Text Extraction",
-            "🧹 Text Cleaning",
-            "✂️ Tokenization",
-            "🚫 Stopword Removal",
-            "📊 TF-IDF Vectorization",
-            "📐 Cosine Similarity",
-            "🔍 Skill Extraction",
-            "🤖 ATS Simulation",
-        ]
-        for step in steps:
-            st.markdown(f"<span class='info-pill'>{step}</span>", unsafe_allow_html=True)
+        # Privacy Section — Styled with an elegant Editorial Serif font to feel trustworthy and distinct
+        st.markdown("### 🔒 Privacy First")
+        st.markdown("""
+        <p style="font-family: 'Georgia', Cambria, 'Times New Roman', serif; font-style: italic; font-size: 0.88rem; color: #94a3b8; line-height: 1.5; padding-left: 2px;">
+            Your data security is important. Resumes are processed locally, analyzed instantly, and are never saved or stored permanently on our servers.
+        </p>
+        """, unsafe_allow_html=True)
 
         st.divider()
-        st.markdown("### 📚 Skills Database")
-        try:
-            db = load_skills_database()
-            total = sum(len(v) for v in db.values())
-            st.metric("Total Skills Tracked", total)
-            st.metric("Categories", len(db))
-        except Exception:
-            st.warning("Skills DB not loaded")
-
-        st.divider()
+        
+        # Dual Footers at the very bottom
+        st.caption("AI Resume Analyzer © 2026")
         st.caption("Built with Python · Streamlit · scikit-learn · NLTK · matplotlib")
 
 
@@ -862,7 +955,6 @@ def render_results(results: dict):
         use_container_width=True,
     )
 
-
 # ═══════════════════════════════════════════════════════════════════
 #  MULTIPLE RESUME COMPARISON
 # ═══════════════════════════════════════════════════════════════════
@@ -891,6 +983,7 @@ def render_comparison_tab(jd_text: str):
                 resume_texts.append(None)
                 resume_names.append(f"Resume {i+1}")
 
+    # No more manual wrapper HTML blocks needed here! Natively handled by CSS now.
     if st.button("⚡ Compare Resumes", use_container_width=True, key="compare_btn"):
         if not jd_text.strip():
             st.error("Please enter a job description first.")
@@ -926,7 +1019,6 @@ def render_comparison_tab(jd_text: str):
         ax.set_facecolor("#0f1117")
         x = np.arange(len(comparison_results))
         w = 0.25
-        colors = ["#7c3aed", "#10b981", "#f59e0b"]
 
         match_scores = [r["match_data"]["final_score"] for r in comparison_results]
         ats_scores = [r["ats_data"]["ats_score"] for r in comparison_results]
@@ -968,13 +1060,37 @@ def main():
     render_sidebar()
 
     # ── Header ──────────────────────────────────────────────────────
+    # Modern AI Header with Gemini-inspired Navy/Blue/White Gradient Glow
     st.markdown("""
-    <div style="text-align:center; padding: 32px 0 24px 0;">
-        <h1 style="font-size:2.5rem; color:#e2e8f0; margin:0;">
-            🎯 AI Resume Ranker
+    <div style="
+        background: radial-gradient(circle at center, rgba(76, 110, 245, 0.22) 0%, rgba(15, 17, 23, 0) 65%);
+        padding: 48px 20px 32px 20px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 10px;
+    ">
+        <h1 style="
+            font-size: 3.2rem; 
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, #8da2fb 65%, #4c6ef5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -0.03em;
+        ">
+             AI Resume Analyzer
         </h1>
-        <p style="color:#8892b0; font-size:1.05rem; margin-top:8px;">
-            Powered by TF-IDF · Cosine Similarity · NLP · Skill Gap Analysis
+        <p style="
+            color: #94a3b8; 
+            font-size: 1.05rem; 
+            margin-top: 12px; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0.85;
+        ">
+            Powered by TF-IDF · Sentence Transformers · Cosine Similarity · NLP
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -983,54 +1099,61 @@ def main():
     tab1, tab2 = st.tabs(["🔍 Single Resume Analysis", "📊 Compare Multiple Resumes"])
 
     with tab1:
-        # ── Input Section ──────────────────────────────────────────
-        st.markdown("### 📂 Step 1 — Upload Your Resume")
-        col_upload, col_info = st.columns([2, 1])
+        # Wrap the whole setup step inside a clean layout card
+        with st.container(border=True):
+            st.markdown("### 📂 Step 1 — Upload Your Resume")
+            col_upload, col_info = st.columns([2, 1])
 
-        with col_upload:
-            uploaded_file = st.file_uploader(
-                "Upload Resume (PDF or TXT)",
-                type=["pdf", "txt"],
-                help="Supported formats: PDF, TXT. Max size: 10MB.",
+            with col_upload:
+                uploaded_file = st.file_uploader(
+                    "Upload Resume (PDF or TXT)",
+                    type=["pdf", "txt"],
+                    label_visibility="collapsed", 
+                    help="Supported formats: PDF, TXT. Max size: 10MB.",
+                )
+
+            with col_info:
+                st.markdown("""
+                <div class="metric-card" style="margin-bottom:0; padding:15px 20px;">
+                    <p style="color:#4c6ef5; font-weight:600; margin-bottom:4px;">📌 Tips for Best Results</p>
+                    <p style="font-size:0.8rem; line-height:1.4;">• Use a clean, text-based PDF</p>
+                    <p style="font-size:0.8rem; line-height:1.4;">• Avoid image-only or scanned PDFs</p>
+                    <p style="font-size:0.8rem; line-height:1.4;">• TXT files give the most accurate results</p>
+                </div>""", unsafe_allow_html=True)
+
+            st.markdown("---") 
+            
+            st.markdown("### 📋 Step 2 — Paste Job Description")
+            jd_text = st.text_area(
+                "Job Description",
+                label_visibility="collapsed", 
+                placeholder="Paste the full job description here...\n\nInclude required skills, responsibilities, and qualifications.",
+                height=220,
+                help="Paste the complete job description for the most accurate analysis.",
             )
 
-        with col_info:
-            st.markdown("""
-            <div class="metric-card">
-                <p style="color:#a78bfa; font-weight:600">📌 Tips for Best Results</p>
-                <p>• Use a clean, text-based PDF</p>
-                <p>• Avoid image-only or scanned PDFs</p>
-                <p>• TXT files give the most accurate results</p>
-            </div>""", unsafe_allow_html=True)
-
-        st.markdown("### 📋 Step 2 — Paste Job Description")
-        jd_text = st.text_area(
-            "Job Description",
-            placeholder="Paste the full job description here...\n\nInclude: required skills, responsibilities, qualifications, and any keywords from the posting.",
-            height=220,
-            help="Paste the complete job description for the most accurate analysis.",
-        )
-
-        # ── Optional: Paste Resume as Text ──────────────────────────
-        with st.expander("📝 Or paste your resume as text (optional)"):
-            resume_text_input = st.text_area(
-                "Resume Text",
-                placeholder="Paste your resume content here if you don't have a file...",
-                height=200,
-                key="manual_resume",
-            )
+            # Optional: Paste Resume as Text
+            with st.expander("📝 Or paste your resume as text alternative"):
+                resume_text_input = st.text_area(
+                    "Resume Text",
+                    placeholder="Paste your resume content here if you don't have a file layout...",
+                    height=200,
+                    key="manual_resume",
+                )
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # ── Analyze Button ───────────────────────────────────────────
-        analyze_btn = st.button(
-            "🚀 Analyze Resume",
-            use_container_width=True,
-            type="primary",
-        )
+        # ── Analyze Button (Centered and Shortened) ───────────────────
+        col_space_left, col_btn, col_space_right = st.columns([2, 1, 2])
+        
+        with col_btn:
+            analyze_btn = st.button(
+                "🚀 Analyze Resume",
+                use_container_width=True, 
+                type="primary",
+            )
 
         if analyze_btn:
-            # Determine resume text source
             resume_text = ""
             resume_name = "Resume"
 
@@ -1042,7 +1165,6 @@ def main():
                 resume_text = resume_text_input
                 resume_name = "Pasted Resume"
 
-            # Validate inputs
             if not resume_text.strip():
                 st.error("❗ Please upload a resume file or paste your resume text.")
                 st.stop()
@@ -1054,7 +1176,6 @@ def main():
             if len(jd_text.strip()) < 50:
                 st.warning("⚠️ Job description seems very short. Results may be inaccurate.")
 
-            # Run analysis with progress bar
             progress_bar = st.progress(0)
             status = st.empty()
 
@@ -1077,11 +1198,9 @@ def main():
             status.empty()
             progress_bar.empty()
 
-            # Store in session state
             st.session_state["results"] = results
             st.success(f"✅ Analysis complete! Match Score: **{results['match_data']['final_score']:.1f}%**")
 
-        # Render results if available
         if "results" in st.session_state:
             render_results(st.session_state["results"])
 
