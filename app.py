@@ -30,7 +30,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")   # Non-interactive backend (required for Streamlit)
+matplotlib.use("Agg")   # Non-interactive backend (as required for Streamlit)
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyArrowPatch
@@ -67,7 +67,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for a cohesive, premium dark-themed dashboard
+# Custom CSS 
 st.markdown("""
 <style>
             
@@ -431,7 +431,7 @@ def plot_score_breakdown(match_score_data: dict, ats_score: int) -> plt.Figure:
     """
     Radar/bar chart showing score component breakdown.
     """
-    #labels = ["TF-IDF\nSimilarity", "Keyword\nOverlap", "Skill\nCoverage", "ATS\nScore"]
+    
     labels = [
     "TF-IDF",
     "Semantic",
@@ -446,7 +446,7 @@ def plot_score_breakdown(match_score_data: dict, ats_score: int) -> plt.Figure:
         match_score_data["skill_coverage"],
         ats_score,
     ]
-    #colors = ["#7c3aed", "#3b82f6", "#10b981", "#f59e0b"]
+    
     colors = [
     "#7c3aed",
     "#06b6d4",
@@ -576,52 +576,6 @@ def generate_text_report(
 #  SIDEBAR
 # ═══════════════════════════════════════════════════════════════════
 
-# def render_sidebar():
-#     with st.sidebar:
-#         st.markdown("## 🎯 AI Resume Ranker")
-#         st.markdown(
-#             "<span class='info-pill'>v1.0</span> "
-#             "<span class='info-pill'>NLP + ML</span> "
-#             "<span class='info-pill'>TF-IDF</span>",
-#             unsafe_allow_html=True,
-#         )
-#         st.divider()
-
-#         st.markdown("### 📖 How It Works")
-#         st.markdown("""
-# 1. **Upload** your resume (PDF/TXT)
-# 2. **Paste** the job description
-# 3. **Click Analyze** to run the ML pipeline
-# 4. Review your **match score**, **skill gaps**, and **suggestions**
-#         """)
-#         st.divider()
-
-#         st.markdown("### ⚙️ ML Pipeline")
-#         steps = [
-#             "📄 Text Extraction",
-#             "🧹 Text Cleaning",
-#             "✂️ Tokenization",
-#             "🚫 Stopword Removal",
-#             "📊 TF-IDF Vectorization",
-#             "📐 Cosine Similarity",
-#             "🔍 Skill Extraction",
-#             "🤖 ATS Simulation",
-#         ]
-#         for step in steps:
-#             st.markdown(f"<span class='info-pill'>{step}</span>", unsafe_allow_html=True)
-
-#         # st.divider()
-#         # st.markdown("### 📚 Skills Database")
-#         # try:
-#         #     db = load_skills_database()
-#         #     total = sum(len(v) for v in db.values())
-#         #     st.metric("Total Skills Tracked", total)
-#         #     st.metric("Categories", len(db))
-#         # except Exception:
-#         #     st.warning("Skills DB not loaded")
-
-#         st.divider()
-#         st.caption("Built with Python · Streamlit · scikit-learn · NLTK · matplotlib")
 def render_sidebar():
     with st.sidebar:
         
@@ -638,7 +592,7 @@ def render_sidebar():
         )
         st.divider()
 
-        # How It Works Section — Using a clean Modern Sans-Serif font with high-contrast accenting
+        # How It Works Section:
         st.markdown("### 📖 How It Works")
         st.markdown("""
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.92rem; line-height: 1.6; color: #cbd5e1;">
@@ -650,7 +604,7 @@ def render_sidebar():
         """, unsafe_allow_html=True)
         st.divider()
 
-        # Privacy Section — Styled with an elegant Editorial Serif font to feel trustworthy and distinct
+        # Privacy Section 
         st.markdown("### 🔒 Privacy First")
         st.markdown("""
         <p style="font-family: 'Georgia', Cambria, 'Times New Roman', serif; font-style: italic; font-size: 0.88rem; color: #94a3b8; line-height: 1.5; padding-left: 2px;">
@@ -1143,7 +1097,7 @@ def main():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # ── Analyze Button (Centered and Shortened) ───────────────────
+        # ── Analyze Button 
         col_space_left, col_btn, col_space_right = st.columns([2, 1, 2])
         
         with col_btn:

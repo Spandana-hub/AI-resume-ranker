@@ -98,7 +98,6 @@ def extract_skills_from_text(text: str, skills_db: dict) -> dict:
             skill_normalized = re.sub(r"[-_]", " ", skill)
 
             # Use word boundary matching to avoid partial matches
-            # e.g., "r" should not match "react" or "docker"
             if len(skill_normalized) <= 2:
                 # Short skills (c, r, go): require word boundaries + not inside longer words
                 pattern = r"\b" + re.escape(skill_normalized) + r"\b"
