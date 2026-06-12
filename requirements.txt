@@ -6,3 +6,5 @@ nltk
 matplotlib
 pdfplumber
 PyPDF2
+sentence-transformers
+torch
